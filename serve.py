@@ -45,4 +45,4 @@ class Model:
         self.model = tf.keras.models.load_model('/artefact/my_model')
 
     def predict(self, features):
-        return self.model(features).numpy()
+        return self.model(np.array(features)).numpy()

@@ -79,16 +79,16 @@ def main():
         loss=loss_fn,
         metrics=["accuracy"]
     )
-    clf.fit(x_train, y_train, epochs=5)
+    clf.fit(np.array(x_train), np.array(y_train).reshape(-1, 1), epochs=5)
 
     clf_prob = tf.keras.Sequential([clf, tf.keras.layers.Activation('sigmoid')])
     
-    compute_log_metrics(clf_prob, x_val, y_val, device)
+    compute_log_metrics(clf_prob, np.array(x_val), y_val, device)
 
     print("\tComputing metrics")
     selected = np.random.choice(model_data.shape[0], size=1000, replace=False)
     features = model_data[FEATURE_COLS].iloc[selected]
-    inference = clf_prob(features).numpy()
+    inference = clf_prob(np.array(features)).numpy()
 
     ModelMonitoringService.export_text(
         features=features.iteritems(),
