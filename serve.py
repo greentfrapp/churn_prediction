@@ -6,6 +6,7 @@ import pickle
 
 import numpy as np
 import torch
+from torch import nn
 import torch.nn.functional as F
 
 from utils.constants import AREA_CODES, STATES, SUBSCRIBER_FEATURES
