@@ -23,7 +23,7 @@ N_ESTIMATORS = int(os.getenv("N_ESTIMATORS"))
 OUTPUT_MODEL_NAME = os.getenv("OUTPUT_MODEL_NAME")
 
 
-def compute_log_metrics(clf, x_val, y_val, device):
+def compute_log_metrics(clf, x_val, y_val):
     """Compute and log metrics."""
     print("\tEvaluating using validation data")
     y_prob = clf(x_val).numpy()
@@ -83,7 +83,7 @@ def main():
 
     clf_prob = tf.keras.Sequential([clf, tf.keras.layers.Activation('sigmoid')])
     
-    compute_log_metrics(clf_prob, np.array(x_val), y_val, device)
+    compute_log_metrics(clf_prob, np.array(x_val), y_val)
 
     print("\tComputing metrics")
     selected = np.random.choice(model_data.shape[0], size=1000, replace=False)
