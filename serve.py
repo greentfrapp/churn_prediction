@@ -44,7 +44,7 @@ def pre_process(http_body):
 class Model:
     def __init__(self):
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.model = torch.load("/artefact/torch_model.pkl").to(self.device)
+        self.model = torch.load("/artefact/lgb_model.pkl").to(self.device)
         self.model.eval()
 
     def predict(self, features):
