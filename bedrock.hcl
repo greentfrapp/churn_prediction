@@ -227,6 +227,9 @@ Only comprises the following:
 */
 serve {
     image = "greentfrapp/express-fastapi:latest"
+    install = [
+        "pip install -r requirements-serve.txt",
+    ]
     script = [
         {sh = [
             "/app/entrypoint.sh"
