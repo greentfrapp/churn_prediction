@@ -8,3 +8,4 @@ fastparquet==0.3.3
 gcsfs==0.6.1
 google-cloud==0.34.0
 google-cloud-bigquery[pandas]==1.24.0
+torch==1.5.0
