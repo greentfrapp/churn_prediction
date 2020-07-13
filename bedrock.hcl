@@ -229,7 +229,7 @@ serve {
     image = "greentfrapp/express-fastapi:latest"
     script = [
         {sh = [
-            "entrypoint.sh"
+            "app/entrypoint.sh"
         ]}
     ]
 
