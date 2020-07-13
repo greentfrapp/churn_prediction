@@ -46,4 +46,4 @@ class Model:
         self.model = tf.keras.Sequential([model, tf.keras.layers.Activation('sigmoid')])
 
     def predict(self, features):
-        return self.model(np.array(features)).numpy()
+        return self.model(np.array(features)).numpy().item()
