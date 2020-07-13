@@ -11,7 +11,9 @@ from bedrock_client.bedrock.api import BedrockApi
 from bedrock_client.bedrock.metrics.service import ModelMonitoringService
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+import torch
+from torch import nn, optim
+import torch.nn.functional as F
 
 from utils.constants import FEATURE_COLS, TARGET_COL
 
@@ -23,10 +25,24 @@ N_ESTIMATORS = int(os.getenv("N_ESTIMATORS"))
 OUTPUT_MODEL_NAME = os.getenv("OUTPUT_MODEL_NAME")
 
 
-def compute_log_metrics(clf, x_val, y_val):
+class TorchModel(nn.Module):
+    def __init__(self, input_dim):
+        super(BasicNet, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 1000)
+        self.fc2 = nn.Linear(1000, 1000)
+        self.fc3 = nn.Linear(1000, 1)
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+
+def compute_log_metrics(clf, x_val, y_val, device):
     """Compute and log metrics."""
     print("\tEvaluating using validation data")
-    y_prob = clf.predict_proba(x_val)[:, 1]
+    y_prob = F.sigmoid(clf(torch.tensor(x_val).to(device))).cpu().detach().numpy()
     y_pred = (y_prob > 0.5).astype(int)
 
     acc = metrics.accuracy_score(y_val, y_pred)
@@ -58,6 +74,7 @@ def compute_log_metrics(clf, x_val, y_val):
 def main():
     """Train pipeline"""
     model_data = pd.read_csv(FEATURES_DATA)
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     print("\tSplitting train and validation data")
     x_train, x_val, y_train, y_val = train_test_split(
@@ -67,18 +84,26 @@ def main():
     )
 
     print("\tTrain model")
-    clf = RandomForestClassifier(
-        num_leaves=NUM_LEAVES,
-        learning_rate=LR,
-        n_estimators=N_ESTIMATORS,
-    )
-    clf.fit(x_train, y_train)
-    compute_log_metrics(clf, x_val, y_val)
+    clf = TorchModel(
+        input_dim=x_train.shape[1]
+    ).to(device)
+    optimizer = optim.Adam(clf.parameters(), lr=0.001)
+    loss_fn = nn.BCEWithLogitsLoss()
+    batchsize = 16
+    for t in range(len(x_train) // batchsize):
+        optimizer.zero_grad()
+        batch_x = x_train[t * batchsize:(t + 1) * batchsize]
+        batch_y = y_train[t * batchsize:(t + 1) * batchsize]
+        logits = clf(torch.tensor(batch_x).to(device))
+        loss = loss_fn(logits, torch.tensor(batch_y).to(device))
+        loss.backward()
+        optimizer.step()
+    compute_log_metrics(clf, x_val, y_val, device)
 
     print("\tComputing metrics")
     selected = np.random.choice(model_data.shape[0], size=1000, replace=False)
     features = model_data[FEATURE_COLS].iloc[selected]
-    inference = clf.predict_proba(features)[:, 1]
+    inference = F.sigmoid(clf(torch.tensor(features).to(device))).cpu().detach().numpy()
 
     ModelMonitoringService.export_text(
         features=features.iteritems(),
@@ -86,8 +111,7 @@ def main():
     )
 
     print("\tSaving model")
-    with open("/artefact/" + OUTPUT_MODEL_NAME, "wb") as model_file:
-        pickle.dump(clf, model_file)
+    torch.save(clf, "/artefact/" + OUTPUT_MODEL_NAME)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,8 @@ import json
 import pickle
 
 import numpy as np
+import torch
+import torch.nn.functional as F
 
 from utils.constants import AREA_CODES, STATES, SUBSCRIBER_FEATURES
 
@@ -41,8 +43,9 @@ def pre_process(http_body):
 
 class Model:
     def __init__(self):
-        with open("/artefact/lgb_model.pkl", "rb") as f:
-            self.model = pickle.load(f)
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.model = torch.load("/artefact/torch_model.pkl").to(self.device)
+        self.model.eval()
 
     def predict(self, features):
-        return self.model.predict_proba(features)[:, 1].item()
+        return F.sigmoid(self.model(torch.tensor(features).to(self.device))).cpu().detach().item()
