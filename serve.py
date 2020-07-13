@@ -42,7 +42,8 @@ def pre_process(http_body):
 
 class Model:
     def __init__(self):
-        self.model = tf.keras.models.load_model('/artefact/my_model')
+        model = tf.keras.models.load_model('/artefact/my_model')
+        self.model = tf.keras.Sequential([model, tf.keras.layers.Activation('sigmoid')])
 
     def predict(self, features):
         return self.model(np.array(features)).numpy()

@@ -96,7 +96,7 @@ def main():
     )
 
     print("\tSaving model")
-    clf_prob.save("/artefact/" + OUTPUT_MODEL_NAME)
+    clf.save("/artefact/" + OUTPUT_MODEL_NAME)
 
 
 if __name__ == "__main__":
