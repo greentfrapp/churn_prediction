@@ -61,7 +61,7 @@ class Model:
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = TorchModel(input_dim=66)
         self.model.load_state_dict(torch.load("/artefact/lgb_model.pkl"))
-        self.model.to(device)
+        self.model.to(self.device)
         self.model.eval()
 
     def predict(self, features):
