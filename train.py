@@ -111,7 +111,7 @@ def main():
     )
 
     print("\tSaving model")
-    torch.save(clf, "/artefact/" + OUTPUT_MODEL_NAME)
+    torch.save(clf.state_dict(), "/artefact/" + OUTPUT_MODEL_NAME)
 
 
 if __name__ == "__main__":
