@@ -60,7 +60,7 @@ class Model:
     def __init__(self):
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = TorchModel(input_dim=66)
-        self.model.load_state_dict("/artefact/lgb_model.pkl")
+        self.model.load_state_dict(torch.load("/artefact/lgb_model.pkl"))
         self.model.to(device)
         self.model.eval()
 
