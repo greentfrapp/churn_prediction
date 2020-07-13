@@ -88,7 +88,7 @@ def main():
     print("\tComputing metrics")
     selected = np.random.choice(model_data.shape[0], size=1000, replace=False)
     features = model_data[FEATURE_COLS].iloc[selected]
-    inference = clf_prob.predict(np.array(features)).numpy()
+    inference = clf_prob.predict(np.array(features))
 
     ModelMonitoringService.export_text(
         features=features.iteritems(),
