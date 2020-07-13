@@ -95,7 +95,7 @@ def main():
         batch_x = x_train[t * batchsize:(t + 1) * batchsize]
         batch_y = y_train[t * batchsize:(t + 1) * batchsize]
         logits = clf(torch.tensor(np.array(batch_x)).float().to(device))
-        loss = loss_fn(logits, torch.tensor(np.array(batch_y)).to(device).view(-1, 1))
+        loss = loss_fn(logits, torch.tensor(np.array(batch_y)).long().to(device).view(-1, 1))
         loss.backward()
         optimizer.step()
     compute_log_metrics(clf, x_val, y_val, device)
