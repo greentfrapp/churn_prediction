@@ -67,11 +67,7 @@ def main():
     )
 
     print("\tTrain model")
-    clf = RandomForestClassifier(
-        num_leaves=NUM_LEAVES,
-        learning_rate=LR,
-        n_estimators=N_ESTIMATORS,
-    )
+    clf = RandomForestClassifier()
     clf.fit(x_train, y_train)
     compute_log_metrics(clf, x_val, y_val)
 
