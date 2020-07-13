@@ -42,7 +42,7 @@ class TorchModel(nn.Module):
 def compute_log_metrics(clf, x_val, y_val, device):
     """Compute and log metrics."""
     print("\tEvaluating using validation data")
-    y_prob = F.sigmoid(clf(torch.tensor(np.array(x_val)).to(device))).cpu().detach().numpy()
+    y_prob = F.sigmoid(clf(torch.tensor(np.array(x_val, dtype=float)).to(device))).cpu().detach().numpy()
     y_pred = (y_prob > 0.5).astype(int)
 
     acc = metrics.accuracy_score(y_val, y_pred)
@@ -94,7 +94,7 @@ def main():
         optimizer.zero_grad()
         batch_x = x_train[t * batchsize:(t + 1) * batchsize]
         batch_y = y_train[t * batchsize:(t + 1) * batchsize]
-        logits = clf(torch.tensor(np.array(batch_x)).to(device))
+        logits = clf(torch.tensor(np.array(batch_x, dtype=float)).to(device))
         loss = loss_fn(logits, torch.tensor(np.array(batch_y)).to(device))
         loss.backward()
         optimizer.step()
@@ -103,7 +103,7 @@ def main():
     print("\tComputing metrics")
     selected = np.random.choice(model_data.shape[0], size=1000, replace=False)
     features = model_data[FEATURE_COLS].iloc[selected]
-    inference = F.sigmoid(clf(torch.tensor(np.array(features)).to(device))).cpu().detach().numpy()
+    inference = F.sigmoid(clf(torch.tensor(np.array(features, dtype=float)).to(device))).cpu().detach().numpy()
 
     ModelMonitoringService.export_text(
         features=features.iteritems(),
