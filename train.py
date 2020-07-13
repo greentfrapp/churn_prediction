@@ -27,7 +27,7 @@ OUTPUT_MODEL_NAME = os.getenv("OUTPUT_MODEL_NAME")
 
 class TorchModel(nn.Module):
     def __init__(self, input_dim):
-        super(BasicNet, self).__init__()
+        super(TorchModel, self).__init__()
         self.fc1 = nn.Linear(input_dim, 1000)
         self.fc2 = nn.Linear(1000, 1000)
         self.fc3 = nn.Linear(1000, 1)
