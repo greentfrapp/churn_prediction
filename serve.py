@@ -48,4 +48,4 @@ class Model:
         self.model.eval()
 
     def predict(self, features):
-        return F.sigmoid(self.model(torch.tensor(features, dtype=float).to(self.device))).cpu().detach().item()
+        return F.sigmoid(self.model(torch.tensor(np.array(features)).float().to(self.device))).cpu().detach().item()
