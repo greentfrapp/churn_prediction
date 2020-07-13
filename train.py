@@ -58,8 +58,7 @@ def compute_log_metrics(clf, x_val, y_val, device):
 def main():
     """Train pipeline"""
     model_data = pd.read_csv(FEATURES_DATA)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+    
     print("\tSplitting train and validation data")
     x_train, x_val, y_train, y_val = train_test_split(
         model_data[FEATURE_COLS],
