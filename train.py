@@ -7,11 +7,11 @@ import pickle
 
 import numpy as np
 import pandas as pd
-import lightgbm as lgb
 from bedrock_client.bedrock.api import BedrockApi
 from bedrock_client.bedrock.metrics.service import ModelMonitoringService
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
 
 from utils.constants import FEATURE_COLS, TARGET_COL
 
@@ -67,7 +67,7 @@ def main():
     )
 
     print("\tTrain model")
-    clf = lgb.LGBMClassifier(
+    clf = RandomForestClassifier(
         num_leaves=NUM_LEAVES,
         learning_rate=LR,
         n_estimators=N_ESTIMATORS,
