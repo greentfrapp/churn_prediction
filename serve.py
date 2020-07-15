@@ -41,8 +41,11 @@ def pre_process(http_body):
 
 class Model:
     def __init__(self):
+        print("LOADING MODEL")
         with open("/artefact/lgb_model.pkl", "rb") as f:
             self.model = pickle.load(f)
+        print("MODEL LOADED")
 
     def predict(self, features):
+        print("PREDICTING")
         return self.model.predict_proba(features)[:, 1].item()
