@@ -25,7 +25,7 @@ def pre_process(http_body):
     features_t = torch.tensor(features)
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
-    return normalize(features_t).unsqueeze()
+    return normalize(features_t).unsqueeze(dim=0)
 
 
 class Model:
