@@ -21,7 +21,7 @@ def pre_process(http_body):
     Returns:
         churn_prob (float): churn probability
     """
-    features = json.loads(http_body)["image"] / 255
+    features = np.array(json.loads(http_body)["image"]) / 255
     features_t = torch.tensor(features)
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
