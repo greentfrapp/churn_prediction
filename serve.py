@@ -17,4 +17,4 @@ class Model:
         self.model = pipeline('sentiment-analysis')
 
     def predict(self, features):
-        return self.model(features)[0]['score']
+        return self.model(features)[0]
